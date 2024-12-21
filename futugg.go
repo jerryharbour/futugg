@@ -5,14 +5,15 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"github.com/jerryharbour/futugg/event"
-	"github.com/jerryharbour/futugg/pb/InitConnect"
-	"github.com/golang/protobuf/proto"
 	"log"
 	"math/rand"
 	"net"
 	"strconv"
 	"time"
+
+	"github.com/golang/protobuf/proto"
+	"github.com/jerryharbour/futugg/event"
+	"github.com/jerryharbour/futugg/pb/InitConnect"
 )
 
 type FutuGG struct {
@@ -58,7 +59,7 @@ func (c *FutuGG) Send(pack *FutuPack) error {
 	return err
 }
 
-func (c *FutuGG) Recv() []byte {
+func (c *FutuGG) Recv() ([]byte, error) {
 	// scanner
 	scanner := bufio.NewScanner(c.Conn)
 	scanner.Buffer([]byte{}, bufio.MaxScanTokenSize*10)
@@ -94,7 +95,7 @@ func (c *FutuGG) Recv() []byte {
 		protoId := uint32(pack.ProtoId)
 
 		if c.SyncMode {
-			return pack.Body
+			return pack.Body, nil
 		}
 
 		handlerName, ok := TransHandlerId(protoId)
@@ -105,7 +106,7 @@ func (c *FutuGG) Recv() []byte {
 				fmt.Println("recvFunc error: ", protoId, recvFunc)
 			}
 			// Recv
-			Cmd(recvFunc, pack.Body)
+			return Recv(recvFunc, pack.Body) //Cmd(recvFunc, pack.Body)
 		} else {
 			fmt.Println("trans handler " + strconv.Itoa(int(protoId)) + " error")
 		}
@@ -114,7 +115,7 @@ func (c *FutuGG) Recv() []byte {
 	if err := scanner.Err(); err != nil {
 		log.Fatalln("invalid apckage ", err)
 	}
-	return nil
+	return nil, nil
 }
 
 func (c *FutuGG) KeepAlive() {
@@ -161,7 +162,7 @@ func (c *FutuGG) initConnect() {
 	c.Send(pack)
 
 	c.SyncMode = true
-	rawPack := c.Recv()
+	rawPack, _ := c.Recv()
 
 	retData := initConnectData(rawPack)
 	c.ServerVer = *retData.S2C.ServerVer
@@ -199,6 +200,13 @@ func Cmd(name string, params ...interface{}) error {
 		fmt.Println(name, " handler func is not exist")
 	}
 	return handlers.Cmd(name, params...)
+}
+
+func Recv(name string, params ...interface{}) ([]byte, error) {
+	if !HasHandler(name) {
+		fmt.Println(name, " handler func is not exist")
+	}
+	return handlers.Recv(name, params...)
 }
 
 func HasHandler(name string) bool {

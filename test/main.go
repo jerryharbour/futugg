@@ -14,13 +14,18 @@ func main() {
 	block := make(chan bool)
 	cli := futugg.New("0.0.0.0", "40000", "")
 
-	futugg.Cmd("send.GetGlobalState", cli)
+	//futugg.Cmd("send.GetGlobalState", cli)
 	cli.KeepAlive()
 
 	// recv
 	go func() {
 		fmt.Println("start recv data")
-		cli.Recv()
+		data, err := cli.Recv()
+		if err != nil {
+			fmt.Printf("err when recv data: %v\n", err)
+		} else {
+			fmt.Printf("recv data: %s\n", string(data))
+		}
 	}()
 
 	//futugg.Cmd("send.Qot_Sub", cli, "HK.50292", "Basic", true, true, "None", false)
@@ -34,7 +39,8 @@ func main() {
 	// futugg.Cmd("send.Qot_GetTicker", cli, "HK.01810", int32(2))
 	// futugg.Cmd("send.Qot_GetOrderBook", cli, "HK.01810", int32(2))
 	// futugg.Cmd("send.Qot_GetBroker", cli, "HK.01810")
-	futugg.Cmd("send.Qot_RequestHistoryKL", cli, "None", "1Min", "HK.00700", "2024-05-09 15:00:00", "2024-05-09 16:05:00")
+	//futugg.Cmd("send.Qot_RequestHistoryKL", cli, "None", "1Min", "HK.00700", "2024-05-09 15:00:00", "2024-05-09 16:05:00")
+	futugg.Cmd("send.Qot_GetWarrant", cli, int32(0), "HK.800000", "Bull", float64(4), float64(10), float64(0.03), float64(0.5), uint64(0), uint64(100000000000000000))
 	// futugg.Cmd("send.Qot_GetTradeDate", cli, int32(1), "2019-01-08 16:00:00", "2019-01-09 16:00:00")
 	// futugg.Cmd("send.Qot_GetStaticInfo", cli, int32(1), int32(3), "HK.01810")
 	// futugg.Cmd("send.Qot_GetPlateSet", cli, int32(1), int32(0))

@@ -84,3 +84,21 @@ func transKLType(KLType string) int32 {
 	// default KLType_Day = 2
 	return int32(2)
 }
+
+func trannsWarrantType(warrType string) int32 {
+	k := "WarrantType_" + warrType
+	if v, ok := Qot_Common.WarrantType_value[k]; ok {
+		return v
+	}
+
+	return int32(0)
+}
+
+func getAllIssuer() []int32 {
+	count := len(Qot_Common.Issuer_name)
+	issuer := make([]int32, count-1)
+	for i := 1; i < count; i++ {
+		issuer[i-1] = int32(i)
+	}
+	return issuer
+}
