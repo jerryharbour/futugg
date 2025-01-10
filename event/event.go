@@ -118,13 +118,13 @@ func (e *event) Recv(name string, params ...interface{}) ([]byte, error) {
 
 	retValueLen := len(retValue)
 	if retValueLen != 2 {
-		return nil, errors.New("function must return two values")
+		return nil, errors.New(name + " function must return two values")
 	}
 
 	var ok bool
 	var data []byte
 	if data, ok = retValue[0].([]byte); !ok {
-		return nil, errors.New("function must return []byte as the first value")
+		return nil, errors.New(name + "function must return []byte as the first value")
 	}
 
 	if err, ok := retValue[1].(error); ok {

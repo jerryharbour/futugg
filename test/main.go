@@ -19,16 +19,18 @@ func main() {
 
 	// recv
 	go func() {
-		fmt.Println("start recv data")
-		data, err := cli.Recv()
-		if err != nil {
-			fmt.Printf("err when recv data: %v\n", err)
-		} else {
-			fmt.Printf("recv data: %s\n", string(data))
+		for i := 0; i < 10; i++ {
+			fmt.Println("start recv data")
+			data, err := cli.Recv()
+			if err != nil {
+				fmt.Printf("err when recv data: %v\n", err)
+			} else {
+				fmt.Printf("recv data: %s\n", string(data))
+			}
 		}
 	}()
 
-	//futugg.Cmd("send.Qot_Sub", cli, "HK.50292", "Basic", true, true, "None", false)
+	//futugg.Cmd("send.Qot_Sub", cli, "HK.50899", "Basic", true, true, "None", false)
 	// futugg.Cmd("send.Qot_RegQotPush", cli, "US.BILI", "Basic", true, false)
 	//futugg.Cmd("send.Qot_GetSubInfo", cli, true)
 	//futugg.Cmd("recv.Qot_UpdateBasicQot", cli, "HK.50292")
@@ -45,7 +47,9 @@ func main() {
 	// futugg.Cmd("send.Qot_GetStaticInfo", cli, int32(1), int32(3), "HK.01810")
 	// futugg.Cmd("send.Qot_GetPlateSet", cli, int32(1), int32(0))
 	//futugg.Cmd("send.Qot_GetPlateSecurity", cli, "HK.01810")
-	//futugg.Cmd("send.Qot_GetBasicQot", cli, "HK.50292")
+	//time.Sleep(5 * time.Second)
+	//fmt.Printf("sennd qot_getbasicqot\n")
+	//futugg.Cmd("send.Qot_GetBasicQot", cli, "HK.50899")
 
 	//futugg.Cmd("send.Trd_GetAccList", cli, uint64(29684822))
 	//futugg.Cmd("send.Trd_UnlockTrade", cli, true, "0ba3b5756c9c4e10e0d983086adbaa9d", int32(1))

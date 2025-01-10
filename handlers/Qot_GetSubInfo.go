@@ -2,11 +2,12 @@ package handlers
 
 import (
 	"fmt"
+
 	"github.com/jerryharbour/futugg"
 	"github.com/jerryharbour/futugg/pb/Qot_GetSubInfo"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/jsonpb"
+	"github.com/golang/protobuf/proto"
 )
 
 func init() {
@@ -39,15 +40,15 @@ func QotGetSubInfoSend(conn *futugg.FutuGG, isReqAllConn bool) error {
 	return err
 }
 
-func QotGetSubInfoRecv(data []byte) error {
+func QotGetSubInfoRecv(data []byte) ([]byte, error) {
 	resp := &Qot_GetSubInfo.Response{}
 	err := proto.Unmarshal(data, resp)
 	if err != nil {
-        return fmt.Errorf("marshal error: %s", err)
-    }
+		return nil, fmt.Errorf("marshal error: %s", err)
+	}
 
-    m := jsonpb.Marshaler{}
-    result, err := m.MarshalToString(resp)
-    fmt.Println(result)
-    return err
+	m := jsonpb.Marshaler{}
+	result, err := m.MarshalToString(resp)
+	//fmt.Println(result)
+	return []byte(result), err
 }

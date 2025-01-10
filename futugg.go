@@ -84,7 +84,7 @@ func (c *FutuGG) Recv() ([]byte, error) {
 	// scan
 	for scanner.Scan() {
 		// read timeout
-		c.Conn.SetReadDeadline(time.Now().Add(5 * time.Second))
+		c.Conn.SetReadDeadline(time.Now().Add(30 * time.Second))
 
 		pack := new(FutuPack)
 		err := pack.Decode(scanner.Bytes())
@@ -125,7 +125,7 @@ func (c *FutuGG) KeepAlive() {
 		for {
 			select {
 			case <-tick.C:
-				fmt.Println("updated")
+				fmt.Println("updated keep live")
 				Cmd("send.KeepAlive", c)
 			}
 

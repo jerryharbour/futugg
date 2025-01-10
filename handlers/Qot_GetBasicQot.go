@@ -2,12 +2,13 @@ package handlers
 
 import (
 	"fmt"
+
 	"github.com/jerryharbour/futugg"
 	"github.com/jerryharbour/futugg/pb/Qot_Common"
 	"github.com/jerryharbour/futugg/pb/Qot_GetBasicQot"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/jsonpb"
+	"github.com/golang/protobuf/proto"
 )
 
 func init() {
@@ -40,19 +41,20 @@ func QotGetBasicQotSend(conn *futugg.FutuGG, stockCode string) error {
 
 	pack.SetBody(pbData)
 	err = conn.Send(pack)
+	//fmt.Printf("send QotGetBasicQotSend for code %s\n", stockCode)
 
 	return err
 }
 
-func QotGetBasicQotRecv(data []byte) error {
+func QotGetBasicQotRecv(data []byte) ([]byte, error) {
 	resp := &Qot_GetBasicQot.Response{}
 	err := proto.Unmarshal(data, resp)
 	if err != nil {
-		return fmt.Errorf("marshal error: %s", err)
+		return nil, fmt.Errorf("marshal error: %s", err)
 	}
 
 	m := jsonpb.Marshaler{}
 	result, err := m.MarshalToString(resp)
-	fmt.Println(result)
-    return err
+	//fmt.Println(result)
+	return []byte(result), err
 }
