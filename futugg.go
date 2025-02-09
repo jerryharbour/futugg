@@ -113,7 +113,7 @@ func (c *FutuGG) Recv() ([]byte, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Fatalln("invalid apckage ", err)
+		log.Println("invalid apckage ", err)
 	}
 	return nil, nil
 }
